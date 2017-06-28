@@ -1,34 +1,28 @@
 package aaa.c_22;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class FragmentContributionsClass extends Fragment implements View.OnClickListener {
     View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_contribution, container, false);
+        rootView = inflater.inflate(R.layout.fragment_contributions, container, false);
         new FetchContributions().execute();
         (rootView.findViewById(R.id.card_abhinav)).setOnClickListener(this);
         (rootView.findViewById(R.id.card_mayank)).setOnClickListener(this);
@@ -39,32 +33,36 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
     }
     @Override
     public void onClick(View v){
-        int id=v.getId();
-        String name="",textID="";
+        int id=v.getId(),textID=0;
+        String name="";
         switch (id)
         {
             case R.id.card_abhinav:
                 name="Abhinav";
-                textID=R.id.abhinavtext+"";
+                textID=R.id.abhinavtext;
                 break;
             case R.id.card_mayank:
                 name="Mayank";
-                textID=R.id.mayanktext+"";
+                textID=R.id.mayanktext;
                 break;
             case R.id.card_narayanan:
                 name="Narayanan";
-                textID=R.id.narayanantext+"";
+                textID=R.id.narayanantext;
                 break;
             case R.id.card_kaushik:
                 name="Kaushik";
-                textID=R.id.kaushiktext+"";
+                textID=R.id.kaushiktext;
                 break;
             case R.id.card_neeraj:
                 name="Neeraj";
-                textID=R.id.neerajtext+"";
+                textID=R.id.neerajtext;
                 break;
         }
-        new FetchPreviousContributions().execute(name,textID);
+        TextView t=(TextView)rootView.findViewById(textID);
+        if(t.getVisibility() == View.VISIBLE)
+            t.setVisibility(View.GONE);
+        else
+            new FetchPreviousContributions().execute(name,textID+"");
     }
     private class FetchPreviousContributions extends AsyncTask<String,Void,Void> {
         String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/",name="";
@@ -108,6 +106,7 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
             TextView t=(TextView)rootView.findViewById(id);
             String s=values(webPage);
             t.setText(s);
+            t.setVisibility(View.VISIBLE);
         }
     }
     private class FetchContributions extends AsyncTask<Void,Void,Void> {
