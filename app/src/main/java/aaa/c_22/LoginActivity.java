@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
     private class Login extends AsyncTask<String,Void,Void> {
-        String webPage="";
+        String webPage="",name="";
         ProgressDialog progressDialog;
         @Override
         protected void onPreExecute(){
@@ -42,12 +42,12 @@ public class LoginActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(String... strings){
+            name=strings[0];
             URL url;
             HttpURLConnection urlConnection = null;
             try
             {
-                //http://srmvdpauditorium.in/aaa/c-22/login.php?username=aaa&password=aaa;
-                url = new URL(baseUrl+"login.php?username="+strings[0]+"&password="+strings[1]);
+                url = new URL(baseUrl+"login.php?username="+name+"&password="+strings[1]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 BufferedReader br=new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 String data;
@@ -72,7 +72,9 @@ public class LoginActivity extends AppCompatActivity {
             if(webPage.equals("login successful"))
             {
                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this,HomeActivity.class));
+                Intent i = new Intent(LoginActivity.this,HomeActivity.class);
+                i.putExtra("Name",name);
+                startActivity(i);
             }
             else
                 Toast.makeText(LoginActivity.this, "Username or Password incorrect.", Toast.LENGTH_LONG).show();

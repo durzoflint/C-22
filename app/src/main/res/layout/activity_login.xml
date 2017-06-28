@@ -16,7 +16,7 @@
         android:gravity="center_horizontal"
         android:hint="Password"
         android:inputType="textPassword"
-        android:text="aaa"
+        android:text="Abhinav"
         android:textColor="@android:color/white"
         android:textColorHighlight="@android:color/black"
         android:textColorHint="@android:color/darker_gray" />
@@ -32,7 +32,7 @@
         android:gravity="center_horizontal"
         android:hint="Name"
         android:inputType="textPersonName"
-        android:text="aaa"
+        android:text="Abhinav"
         android:textColor="@android:color/white"
         android:textColorHighlight="@android:color/black"
         android:textColorHint="@android:color/darker_gray" />
