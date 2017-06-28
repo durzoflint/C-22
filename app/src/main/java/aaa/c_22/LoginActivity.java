@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.dismiss();
             if(webPage.equals("login successful"))
             {
-                Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(LoginActivity.this,HomeActivity.class));
             }
             else
