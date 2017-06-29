@@ -56,6 +56,8 @@ public class FragmentShoppingCartClass extends Fragment{
                                 if(name.length()>0 && quantity.length()>0)
                                 {
                                     //TODO add item in database and fetch again to display in fragment
+                                    //http://srmvdpauditorium.in/aaa/c-22/addItemToCart.php?name=Abhinav&quantity=12
+                                    //success
                                 }
                             }
                         })
@@ -84,6 +86,8 @@ public class FragmentShoppingCartClass extends Fragment{
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //TODO remove from database
+                            //http://srmvdpauditorium.in/aaa/c-22/removeItemFromCart.php?name=Abhinav&quantity=12&color=Green
+                            //success
                             view.setVisibility(View.GONE);
                         }
                     })
@@ -92,12 +96,21 @@ public class FragmentShoppingCartClass extends Fragment{
                         {
                             int selectedId=gpaRadioGroup.getCheckedRadioButtonId();
                             RadioButton gpaoption=(RadioButton)changecolor.findViewById(selectedId);
-                            if(gpaoption.getText().toString().equals("Red"))
-                                view.setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.holo_red_dark));
-                            else if (gpaoption.getText().toString().equals("Green"))
-                                view.setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.holo_green_dark));
-                            else
-                                view.setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.transparent));
+                            String color = gpaoption.getText().toString();
+                            switch (color) {
+                                case "Red":
+                                    view.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
+                                    break;
+                                case "Green":
+                                    view.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark));
+                                    break;
+                                default:
+                                    view.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+                                    break;
+                            }
+                            //TODO change color in databse
+                            //http://srmvdpauditorium.in/aaa/c-22/changeColorInCart.php?name=Abhinav&quantity=12&color=Green
+                            //success
                         }
                     })
                     .create().show();
@@ -185,5 +198,17 @@ public class FragmentShoppingCartClass extends Fragment{
                 data.addView(linearLayout);
             }
         }
+    }
+    String handleSpaces(String s){
+        String x="";
+        for(int i=0;i<s.length();i++)
+        {
+            char ch= s.charAt(i);
+            if(ch==' ')
+                x=x+"%20";
+            else
+                x=x+ch;
+        }
+        return x;
     }
 }
