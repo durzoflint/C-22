@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.BufferedReader;
@@ -23,19 +25,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
-public class FragmentShoppingCartClass extends Fragment {
+public class FragmentShoppingCartClass extends Fragment{
+    ArrayList<Integer> ids = new ArrayList<>();
     View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
-
         new FetchShoppingCart().execute();
-        //TODO set ids to each linear layout and implement onClick() method
-
-        //TODO give option to mark as red or green or remove when clicked on an item
-
         Button edit=(Button)rootView.findViewById(R.id.editcart);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,8 +46,7 @@ public class FragmentShoppingCartClass extends Fragment {
                         .setView(addToCart)
                         .setMessage("\nEnter name and quantity of Item to be added.\n")
                         .setIcon(android.R.drawable.ic_menu_agenda)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-                        {
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 EditText nameinput=(EditText)addToCart.findViewById(R.id.name);
@@ -66,6 +64,45 @@ public class FragmentShoppingCartClass extends Fragment {
         });
         return rootView;
     }
+    View.OnClickListener myOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View view)
+        {
+            TextView nameView=(TextView)(((ViewGroup)view).getChildAt(0));
+            String name=nameView.getText().toString();
+            TextView quantityView=(TextView)(((ViewGroup)view).getChildAt(1));
+            String quantity=quantityView.getText().toString();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            final View changecolor = inflater.inflate(R.layout.changecolor, null);
+            final RadioGroup gpaRadioGroup = (RadioGroup)changecolor.findViewById(R.id.gparadiogroup);
+            new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.MyDialogTheme))
+                    .setTitle(name)
+                    .setView(changecolor)
+                    .setMessage("\nQuantity : "+quantity+"\n")
+                    .setIcon(android.R.drawable.ic_menu_agenda)
+                    .setNegativeButton("Remove", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //TODO remove from database
+                            view.setVisibility(View.GONE);
+                        }
+                    })
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            int selectedId=gpaRadioGroup.getCheckedRadioButtonId();
+                            RadioButton gpaoption=(RadioButton)changecolor.findViewById(selectedId);
+                            if(gpaoption.getText().toString().equals("Red"))
+                                view.setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.holo_red_dark));
+                            else if (gpaoption.getText().toString().equals("Green"))
+                                view.setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.holo_green_dark));
+                            else
+                                view.setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.transparent));
+                        }
+                    })
+                    .create().show();
+        }
+    };
     private class FetchShoppingCart extends AsyncTask<Void,Void,Void> {
         String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/";
         ProgressDialog progressDialog;
@@ -118,6 +155,10 @@ public class FragmentShoppingCartClass extends Fragment {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout
                         .LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 LinearLayout linearLayout=new LinearLayout(getContext());
+                linearLayout.setOnClickListener(myOnClickListener);
+                int id=View.generateViewId();
+                ids.add(id);
+                linearLayout.setId(id);
                 if(color.equals("Red"))
                     linearLayout.setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.holo_red_dark));
                 else if(color.equals("Green"))
