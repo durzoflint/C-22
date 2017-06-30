@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,11 +55,7 @@ public class FragmentShoppingCartClass extends Fragment{
                                 EditText quantityinput=(EditText)addToCart.findViewById(R.id.quantity);
                                 String quantity=quantityinput.getText().toString();
                                 if(name.length()>0 && quantity.length()>0)
-                                {
-                                    //TODO add item in database and fetch again to display in fragment
-                                    //http://srmvdpauditorium.in/aaa/c-22/addItemToCart.php?name=Abhinav&quantity=12
-                                    //success
-                                }
+                                    new AddToCart().execute(name,quantity);
                             }
                         })
                         .create().show();
@@ -71,9 +68,9 @@ public class FragmentShoppingCartClass extends Fragment{
         public void onClick(final View view)
         {
             TextView nameView=(TextView)(((ViewGroup)view).getChildAt(0));
-            String name=nameView.getText().toString();
+            final String name=nameView.getText().toString();
             TextView quantityView=(TextView)(((ViewGroup)view).getChildAt(1));
-            String quantity=quantityView.getText().toString();
+            final String quantity=quantityView.getText().toString();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             final View changecolor = inflater.inflate(R.layout.changecolor, null);
             final RadioGroup gpaRadioGroup = (RadioGroup)changecolor.findViewById(R.id.gparadiogroup);
@@ -85,9 +82,7 @@ public class FragmentShoppingCartClass extends Fragment{
                     .setNegativeButton("Remove", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            //TODO remove from database
-                            //http://srmvdpauditorium.in/aaa/c-22/removeItemFromCart.php?name=Abhinav&quantity=12&color=Green
-                            //success
+                            new RemoveFromCart().execute(name,quantity);
                             view.setVisibility(View.GONE);
                         }
                     })
@@ -99,18 +94,19 @@ public class FragmentShoppingCartClass extends Fragment{
                             String color = gpaoption.getText().toString();
                             switch (color) {
                                 case "Red":
-                                    view.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
+                                    view.setBackgroundColor(ContextCompat.getColor(getContext(),
+                                            android.R.color.holo_red_dark));
                                     break;
                                 case "Green":
-                                    view.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark));
+                                    view.setBackgroundColor(ContextCompat.getColor(getContext(),
+                                            android.R.color.holo_green_dark));
                                     break;
                                 default:
-                                    view.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+                                    view.setBackgroundColor(ContextCompat.getColor(getContext(),
+                                            android.R.color.transparent));
                                     break;
                             }
-                            //TODO change color in databse
-                            //http://srmvdpauditorium.in/aaa/c-22/changeColorInCart.php?name=Abhinav&quantity=12&color=Green
-                            //success
+                            new ChangeItemColorInCart().execute(name,quantity,color);
                         }
                     })
                     .create().show();
@@ -197,6 +193,133 @@ public class FragmentShoppingCartClass extends Fragment{
                 linearLayout.addView(tv2);
                 data.addView(linearLayout);
             }
+        }
+    }
+    private class AddToCart extends AsyncTask<String,Void,Void> {
+        String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/",itemName;
+        ProgressDialog progressDialog;
+        @Override
+        protected void onPreExecute(){
+            progressDialog = ProgressDialog.show(getActivity(), "Please Wait!","Adding to Cart!");
+            super.onPreExecute();
+        }
+        @Override
+        protected Void doInBackground(String... strings) {
+            itemName=strings[0];
+            String itemQuantity=strings[1];
+            URL url;
+            HttpURLConnection urlConnection = null;
+            try
+            {
+                url = new URL(handleSpaces(baseUrl+"addItemToCart.php?name="+itemName+"&quantity="+itemQuantity));
+                urlConnection = (HttpURLConnection) url.openConnection();
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                String data;
+                while ((data=br.readLine()) != null)
+                    webPage=webPage+data;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            if (webPage.equals("success"))
+                Toast.makeText(getContext(), "Item Added to Cart Successfully", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getContext(), "Error while adding "+itemName+" to Cart", Toast.LENGTH_LONG).show();
+            new FetchShoppingCart().execute();
+        }
+    }
+    private class RemoveFromCart extends AsyncTask<String,Void,Void> {
+        String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/",itemName;
+        ProgressDialog progressDialog;
+        @Override
+        protected void onPreExecute(){
+            progressDialog = ProgressDialog.show(getActivity(), "Please Wait!","Removing form Cart!");
+            super.onPreExecute();
+        }
+        @Override
+        protected Void doInBackground(String... strings) {
+            itemName=strings[0];
+            String itemQuantity=strings[1];
+            URL url;
+            HttpURLConnection urlConnection = null;
+            try
+            {
+                url = new URL(handleSpaces(baseUrl+"removeItemFromCart.php?name="+itemName+"&quantity="+itemQuantity));
+                urlConnection = (HttpURLConnection) url.openConnection();
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                String data;
+                while ((data=br.readLine()) != null)
+                    webPage=webPage+data;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            if (webPage.equals("success"))
+                Toast.makeText(getContext(), "Item Removed from Cart Successfully", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getContext(), "Error while removing "+itemName+" from Cart", Toast.LENGTH_LONG).show();
+            new FetchShoppingCart().execute();
+        }
+    }
+    private class ChangeItemColorInCart extends AsyncTask<String,Void,Void> {
+        String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/",itemName;
+        @Override
+        protected Void doInBackground(String... strings) {
+            itemName=strings[0];
+            String itemQuantity=strings[1];
+            URL url;
+            HttpURLConnection urlConnection = null;
+            try
+            {
+                url = new URL(handleSpaces(baseUrl+"changeColorInCart.php?name="+itemName
+                        +"&quantity="+itemQuantity+"&color="+strings[2]));
+                urlConnection = (HttpURLConnection) url.openConnection();
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                String data;
+                while ((data=br.readLine()) != null)
+                    webPage=webPage+data;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (!webPage.equals("success"))
+                Toast.makeText(getContext(), "Error while changing color. Please refresh again and check.",
+                        Toast.LENGTH_LONG).show();
         }
     }
     String handleSpaces(String s){
