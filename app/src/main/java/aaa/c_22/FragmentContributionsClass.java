@@ -183,12 +183,6 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
     }
     private class FetchContributions extends AsyncTask<Void,Void,Void> {
         String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/";
-        ProgressDialog progressDialog;
-        @Override
-        protected void onPreExecute(){
-            progressDialog = ProgressDialog.show(getActivity(), "Please Wait!","Fetching Data!");
-            super.onPreExecute();
-        }
         @Override
         protected Void doInBackground(Void... voids) {
             URL url;
@@ -216,7 +210,6 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressDialog.dismiss();
             try
             {
                 JSONObject jason=new JSONObject(webPage);

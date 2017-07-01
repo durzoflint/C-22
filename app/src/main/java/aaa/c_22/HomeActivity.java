@@ -43,11 +43,12 @@ public class HomeActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id)
         {
-            case R.id.udhari:
-                Toast.makeText(this, "Abhi kaam chal raha hai", Toast.LENGTH_LONG).show();
-                return true;
+            case android.R.id.home:
             case R.id.logout:
                 logout();
+                return true;
+            case R.id.udhari:
+                Toast.makeText(this, "Abhi kaam chal raha hai", Toast.LENGTH_LONG).show();
                 return true;
         }
 

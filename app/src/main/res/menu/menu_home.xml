@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="aaa.c_22.HomeActivity">
 
-    <item
+    <!--item
         android:id="@+id/udhari"
         android:orderInCategory="100"
         android:title="Udhari"
-        app:showAsAction="never" />
+        app:showAsAction="never" /-->
 
     <item
         android:id="@+id/logout"
