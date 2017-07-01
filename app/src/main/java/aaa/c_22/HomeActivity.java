@@ -47,9 +47,11 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.logout:
                 logout();
                 return true;
+            /*
             case R.id.udhari:
                 Toast.makeText(this, "Abhi kaam chal raha hai", Toast.LENGTH_LONG).show();
                 return true;
+            */
         }
 
         return super.onOptionsItemSelected(item);
