@@ -70,7 +70,6 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
     }
     private class UpdateContributions extends AsyncTask<String,Void,Void> {
         String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/",name=username;
-        int id=0;
         ProgressDialog progressDialog;
         @Override
         protected void onPreExecute(){

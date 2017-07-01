@@ -1,28 +1,22 @@
 package aaa.c_22;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity {
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
     static String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +27,8 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -47,28 +41,31 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id)
+        {
+            case R.id.udhari:
+                Toast.makeText(this, "Abhi kaam chal raha hai", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.logout:
+                logout();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
         @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    FragmentContributionsClass fcc=new FragmentContributionsClass();
-                    return fcc;
+                    return new FragmentContributionsClass();
                 case 1:
-                    FragmentShoppingCartClass fscc=new FragmentShoppingCartClass();
-                    return fscc;
+                    return new FragmentShoppingCartClass();
                 case 2:
-                    FragmentRecordClass frc=new FragmentRecordClass();
-                    return frc;
+                    return new FragmentRecordClass();
             }
             return null;
         }
@@ -88,5 +85,24 @@ public class HomeActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        logout();
+    }
+    private void logout(){
+        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.MyDialogTheme2))
+                .setTitle("Really Logout?")
+                .setMessage("\nAre you sure you want to Logout?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Intent i = getBaseContext().getPackageManager()
+                                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                }).create().show();
     }
 }
