@@ -147,12 +147,6 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
     private class FetchPreviousContributions extends AsyncTask<String,Void,Void> {
         String webPage="",baseUrl="http://srmvdpauditorium.in/aaa/c-22/",name="";
         int id=0;
-        ProgressDialog progressDialog;
-        @Override
-        protected void onPreExecute(){
-            progressDialog = ProgressDialog.show(getActivity(), "Please Wait!","Fetching Data from Archive!");
-            super.onPreExecute();
-        }
         @Override
         protected Void doInBackground(String... strings) {
             name=strings[0];
@@ -182,7 +176,6 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressDialog.dismiss();
             TextView t=(TextView)rootView.findViewById(id);
             String s=values(webPage);
             t.setText(s);
