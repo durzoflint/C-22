@@ -2,11 +2,13 @@ package aaa.c_22;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,18 +19,40 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
+    boolean savelogin;
     String baseUrl="http://srmvdpauditorium.in/aaa/c-22/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        final EditText nameInout = (EditText)findViewById(R.id.name);
+        final EditText passwordInout = (EditText)findViewById(R.id.password);
+        final CheckBox rememberpasswordbox=(CheckBox)findViewById(R.id.checkBox);
+        SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        final SharedPreferences.Editor loginPrefsEditor = loginPreferences.edit();
+        savelogin = loginPreferences.getBoolean("savelogin", false);
+        if(savelogin)
+        {
+            nameInout.setText(loginPreferences.getString("id",""));
+            passwordInout.setText(loginPreferences.getString("password",""));
+            rememberpasswordbox.setChecked(true);
+        }
         Button login=(Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText name=(EditText)findViewById(R.id.name);
-                EditText password=(EditText)findViewById(R.id.password);
-                new Login().execute(name.getText().toString(),password.getText().toString());
+                String id = nameInout.getText().toString();
+                String password =  passwordInout.getText().toString();
+                if (rememberpasswordbox.isChecked()) {
+                    loginPrefsEditor.putBoolean("saveLogin", true);
+                    loginPrefsEditor.putString("id", id);
+                    loginPrefsEditor.putString("password", password);
+                    loginPrefsEditor.apply();
+                } else {
+                    loginPrefsEditor.clear();
+                    loginPrefsEditor.commit();
+                }
+                new Login().execute(id,password);
             }
         });
     }
