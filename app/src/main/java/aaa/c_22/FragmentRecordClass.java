@@ -43,23 +43,31 @@ public class FragmentRecordClass extends Fragment {
                         .setView(addRecord)
                         .setMessage("\nEnter Date, Item Name and Cost\n")
                         .setIcon(android.R.drawable.ic_menu_agenda)
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                DatePicker pickDate = (DatePicker)addRecord.findViewById(R.id.pickdate);
-                                String year = ""+pickDate.getYear();
-                                String month = ""+(pickDate.getMonth()+1);
-                                String day = ""+pickDate.getDayOfMonth();
                                 EditText nameInput = (EditText)addRecord.findViewById(R.id.name);
                                 String itemName = nameInput.getText().toString();
                                 EditText costInput = (EditText)addRecord.findViewById(R.id.cost);
                                 String itemCost = costInput.getText().toString();
-                                if(month.length()==1)
-                                    month="0"+month;
-                                if(day.length()==1)
-                                    day="0"+day;
-                                String idFordate = year+month+day;
-                                new AddRecord().execute(day+"/"+month+"/"+year, itemName, itemCost, idFordate);
+                                if(itemName.length()>0 && itemCost.length()>0)
+                                {
+                                    DatePicker pickDate = (DatePicker) addRecord.findViewById(R.id.pickdate);
+                                    String year = "" + pickDate.getYear();
+                                    String month = "" + (pickDate.getMonth() + 1);
+                                    String day = "" + pickDate.getDayOfMonth();
+                                    if (month.length() == 1)
+                                        month = "0" + month;
+                                    if (day.length() == 1)
+                                        day = "0" + day;
+                                    String idFordate = year + month + day;
+                                    new AddRecord().execute(day + "/" + month + "/" + year, itemName, itemCost, idFordate);
+                                }
                             }
                         })
                         .create().show();

@@ -46,6 +46,11 @@ public class FragmentShoppingCartClass extends Fragment{
                         .setView(addToCart)
                         .setMessage("\nEnter name and quantity of Item to be added.\n")
                         .setIcon(android.R.drawable.ic_menu_agenda)
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int which)
                             {
