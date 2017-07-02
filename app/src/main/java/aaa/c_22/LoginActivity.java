@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
                 String id = nameInout.getText().toString();
                 String password =  passwordInout.getText().toString();
                 if (rememberpasswordbox.isChecked()) {
-                    loginPrefsEditor.putBoolean("saveLogin", true);
+                    loginPrefsEditor.putBoolean("savelogin", true);
                     loginPrefsEditor.putString("id", id);
                     loginPrefsEditor.putString("password", password);
                     loginPrefsEditor.apply();
