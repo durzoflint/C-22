@@ -108,6 +108,7 @@ public class FragmentContributionsClass extends Fragment implements View.OnClick
                 Toast.makeText(getContext(), "Update Successful!", Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getContext(), "An error occurred while updating! Try again or call Abhinav", Toast.LENGTH_LONG).show();
+            new FetchContributions().execute();
         }
     }
     @Override
